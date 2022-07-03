@@ -240,6 +240,8 @@ class DataPrepper:
         feature_results["doc_id"] = []  # capture the doc id so we can join later
         feature_results["query_id"] = []  # ^^^
         feature_results["sku"] = []
+        for name in self.get_feature_names():
+            feature_results[name] = []
 
         docs_in_logs_response = {}
         for hit in response['hits']['hits']:
@@ -251,14 +253,17 @@ class DataPrepper:
             feature_results["sku"].append(doc_id)
             for entry in docs_in_logs_response[doc_id]:
                 name = entry['name']
-                if name not in feature_results:
-                    feature_results[name] = []
 
                 feature_results[name].append(entry.get('value', 0))
 
         frame = pd.DataFrame(feature_results)
         return frame.astype({'doc_id': 'int64', 'query_id': 'int64', 'sku': 'int64'})
         # IMPLEMENT_END
+
+    def get_feature_names(self):
+        with open('week1/conf/ltr_featureset.json') as f:
+            j = json.load(f)
+            return list(map(lambda x: str(x["name"]), j['featureset']['features']))
 
     # Can try out normalizing data, but for XGb, you really don't have to since it is just finding splits
     def normalize_data(self, ranks_features_df, feature_set, normalize_type_map):
