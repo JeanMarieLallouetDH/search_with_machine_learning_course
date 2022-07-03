@@ -246,6 +246,8 @@ class DataPrepper:
             feature_results[name] = []
         if len(query_doc_ids) > 1:
             print(query_doc_ids)
+            print(response)
+            exit(0)
         for doc_id in query_doc_ids:
             feature_results["doc_id"].append(doc_id)  # capture the doc id so we can join later
             feature_results["query_id"].append(query_id)
