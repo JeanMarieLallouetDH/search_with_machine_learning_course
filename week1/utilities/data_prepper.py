@@ -240,7 +240,8 @@ class DataPrepper:
         feature_results["doc_id"] = []  # capture the doc id so we can join later
         feature_results["query_id"] = []  # ^^^
         feature_results["sku"] = []
-        for name in self.get_feature_names():
+        feature_names = self.get_feature_names()
+        for name in feature_names:
             feature_results[name] = []
 
         docs_in_logs_response = {}
@@ -257,7 +258,7 @@ class DataPrepper:
                 feature_results[name].append(entry.get('value', 0))
 
         frame = pd.DataFrame(feature_results)
-        return frame.astype({'doc_id': 'int64', 'query_id': 'int64', 'sku': 'int64'})
+        return frame.astype({'doc_id': 'int64', 'query_id': 'int64', 'sku': 'int64'} | dict.fromkeys(feature_names, 'float64'))
         # IMPLEMENT_END
 
     def get_feature_names(self):
