@@ -247,15 +247,14 @@ class DataPrepper:
 
         docs_in_logs_response = {}
         for hit in response['hits']['hits']:
-            docs_in_logs_response[hit['_id']] = hit['fields']['_ltrlog']
+            docs_in_logs_response[str(hit['_id'])] = hit['fields']['_ltrlog'][0]['log_entry']
 
         for doc_id in query_doc_ids:
             feature_results["doc_id"].append(doc_id)  # capture the doc id so we can join later
             feature_results["query_id"].append(query_id)
             feature_results["sku"].append(doc_id)
-            for entry in docs_in_logs_response[doc_id]:
+            for entry in docs_in_logs_response[str(doc_id)]:
                 name = entry['name']
-
                 feature_results[name].append(entry.get('value', 0))
 
         frame = pd.DataFrame(feature_results)
