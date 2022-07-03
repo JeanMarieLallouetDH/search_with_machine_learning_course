@@ -12,6 +12,18 @@
             "name": "{{keywords}}"
           }
         }
+      },
+      {
+        "name": "name_phrase_match",
+        "params": [
+          "keywords"
+        ],
+        "template_language": "mustache",
+        "template": {
+          "phrase_match": {
+            "name": "{{keywords}}"
+          }
+        }
       }
     ]
   }
