@@ -14,13 +14,13 @@
         }
       },
       {
-        "name": "name_phrase_match",
+        "name": "name_match_phrase",
         "params": [
           "keywords"
         ],
         "template_language": "mustache",
         "template": {
-          "phrase_match": {
+          "match_phrase": {
             "name": "{{keywords}}"
           }
         }
