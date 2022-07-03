@@ -240,20 +240,21 @@ class DataPrepper:
         feature_results["doc_id"] = []  # capture the doc id so we can join later
         feature_results["query_id"] = []  # ^^^
         feature_results["sku"] = []
-        log_entries = response['hits']['hits'][0]['fields']['_ltrlog'][0]['log_entry']
-        for entry in log_entries:
-            name = entry['name']
-            feature_results[name] = []
-        if len(query_doc_ids) > 1:
-            print(query_doc_ids)
-            print(response)
-            exit(0)
+
+        docs_in_logs_response = {}
+        for hit in response['hits']['hits']:
+            docs_in_logs_response[hit['_id']] = hit['fields']['_ltrlog']
+
         for doc_id in query_doc_ids:
             feature_results["doc_id"].append(doc_id)  # capture the doc id so we can join later
             feature_results["query_id"].append(query_id)
             feature_results["sku"].append(doc_id)
-            for entry in log_entries:
-                feature_results[entry['name']].append(entry.get('value', 0))
+            for entry in docs_in_logs_response[doc_id]:
+                name = entry['name']
+                if name not in feature_results:
+                    feature_results[name] = []
+
+                feature_results[name].append(entry.get('value', 0))
 
         frame = pd.DataFrame(feature_results)
         return frame.astype({'doc_id': 'int64', 'query_id': 'int64', 'sku': 'int64'})
