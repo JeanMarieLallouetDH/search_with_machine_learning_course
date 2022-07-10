@@ -20,8 +20,41 @@
         ],
         "template_language": "mustache",
         "template": {
-          "match_phrase": {
-            "name": "{{keywords}}"
+          "multi_match": {
+                "query": "{{keywords}}",
+                "type": "phrase",
+                "slop": "6",
+                "fields": ["name"]
+            }
+        }
+      },
+      {
+        "name": "customer_review_average",
+        "params": [],
+        "template_language": "mustache",
+        "template": {
+          "script_score": {
+            "script": {
+                "source": "doc['customerReviewAverage'].size()==0?0:doc['customerReviewAverage'].value"
+            },
+            "query": {
+                "match_all": {}
+            }
+          }
+        }
+      },
+      {
+        "name": "customer_review_count",
+        "params": [],
+        "template_language": "mustache",
+        "template": {
+          "script_score": {
+            "script": {
+                "source": "doc['customerReviewCount'].size()==0?0:doc['customerReviewCount'].value"
+            },
+            "query": {
+                "match_all": {}
+            }
           }
         }
       }
